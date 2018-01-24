@@ -14,16 +14,17 @@
 
 void background (char * cmd);
 
-char cmd[MAXLINE];
 int main(){
 	int status;
 	while (1)
 	{
+		char cmd[MAXLINE];
 		printf("mysh$ ");
 		fgets(cmd, MAXLINE, stdin); 	// read a command from the user
 		 
+		printf("%s\n", cmd);
 		//if the command in cmd is “exit\n”, then terminate this program;
-		if (strcmp(cmd,"exit\n")==0){
+		if (strncmp(cmd, "exit\n", MAXLINE)==0){
 			printf("Exiting");
 			exit(0);
 		}
@@ -34,16 +35,19 @@ int main(){
 			int who = fork();
 
 			if (who == 0){
+				fflush (stdout);
 				background(cmd);
-				getrusage(RUSAGE_CHILDREN, &usage);
-			}
-
+			};
+			
+			printf("Waiting\n");
 			wait(&status);
+			printf("Done\n");
+			getrusage(RUSAGE_CHILDREN, &usage);
 			
-			printf("ICS: %ld ST: %ld US: %ld", usage.ru_nivcsw, usage.ru_stime.tv_sec, usage.ru_utime.tv_sec);
-			
-		}
+			printf("Involuntary Context Switches: %ld\nCPU Time (microseconds): %ld\nUser Time (microseconds): %ld\n\n", usage.ru_nivcsw, usage.ru_stime.tv_usec, usage.ru_utime.tv_usec);	
+			printf("CPU Time (seconds): %ld\nUser Time (seconds): %ld\n\n", usage.ru_stime.tv_sec, usage.ru_utime.tv_sec);	
 
+		}
 	}
 }
 
