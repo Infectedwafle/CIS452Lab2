@@ -40,9 +40,9 @@ int main(){
 			};
 			
 			printf("Waiting\n");
-			wait(&status);
+			wait4(who, &status, 0, &usage);
 			printf("Done\n");
-			getrusage(RUSAGE_CHILDREN, &usage);
+			
 			
 			printf("Involuntary Context Switches: %ld\nCPU Time (microseconds): %ld\nUser Time (microseconds): %ld\n\n", usage.ru_nivcsw, usage.ru_stime.tv_usec, usage.ru_utime.tv_usec);	
 			printf("CPU Time (seconds): %ld\nUser Time (seconds): %ld\n\n", usage.ru_stime.tv_sec, usage.ru_utime.tv_sec);	
